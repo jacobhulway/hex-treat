@@ -300,7 +300,7 @@ struct soundINIT {
 	soundINIT(string name, string path) : alias(name), path(path){}
 };
 
-vector<soundINIT> sounds = {soundINIT("boom","\"audio\\boom.mp3\"")};
+vector<soundINIT> sounds = {soundINIT("boom","\"audio\\boom.mp3\""), soundINIT("bg1", "\"audio\\moo.mp3\"")};
 
 void playSound(string alias) {
     MCIERROR error = mciSendString((L"play " + toWstring(alias) + L" from 0").c_str(), NULL, 0, NULL);
