@@ -302,6 +302,9 @@ struct soundINIT {
 
 vector<soundINIT> sounds = {soundINIT("boom","\"audio\\boom.mp3\""), soundINIT("bg1", "\"audio\\moo.mp3\"")};
 
+vector<string> bgMusic = { "bg1", "boom"};
+
+
 void playSound(string alias) {
     MCIERROR error = mciSendString((L"play " + toWstring(alias) + L" from 0").c_str(), NULL, 0, NULL);
 	cout << "PLAYING SOUND: " << alias << endl;
@@ -326,11 +329,15 @@ void loadSound(string path, string alias){
         std::cout << "Sucessfully Loaded Sound: " << alias << std::endl;
     }
 }
+
 void loadSounds() {
     for (soundINIT& s : sounds) {
         loadSound(s.path, s.alias);
     }
 }
+
+void bgMusic
+
 #pragma endregion
 
 #pragma region player modeel stuff:
