@@ -945,7 +945,7 @@ void drawFlashlight(float x, float y, float angle, float widthAngle) {
 }
 
 #pragma endregion
-//now the platyer bites
+//now the platyer bites ow
 #pragma region player-world interactions
 point drawPlayerPoint(specialPoint p) {
     point d= projectPoint(p.rx, p.ry, p.rz);
