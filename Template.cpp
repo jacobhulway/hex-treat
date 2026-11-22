@@ -1321,6 +1321,23 @@ void drawDialogues(vector<dialogue>& g) {
         }
     }
 }
+//handles the visual transitions in the game
+float transitionAlpha = 1;
+void transitionTick() {
+	if (transitionAlpha > 0) {
+		glColor4f(1, 1, 1, transitionAlpha);
+		drawSprite(texture, __TRANSITIONFRAME__, 0, 0, 2560, 1440);
+        glColor4f(1, 1, 1, 1);
+		transitionAlpha -= 0.01;
+	}
+	else {
+		transitionAlpha = 0;
+	}
+}
+//begins a visual transition fade
+void startTransition() {
+	transitionAlpha = 1;
+}
 //holds the entire game level data 
 
 #pragma endregion
@@ -1419,15 +1436,19 @@ void titleScreen() {
             //do menue actuion:
 			if (b.text == "Play The Game") {
 				screenMode = 1;
+                startTransition();
 			}
 			else if (b.text == "Settings") {
 				screenMode = 3;
+                startTransition();
 			}
 			else if (b.text == "Credits") {
 				screenMode = 4;
+                startTransition();
 			}
 			else if (b.text == "Exit") {
 				exit(0);
+                startTransition();
 			}
         }
 	}
@@ -1851,7 +1872,7 @@ int main()
 
 
 
-
+        transitionTick();
 
         glfwSwapBuffers(window);
 
