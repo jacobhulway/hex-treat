@@ -307,6 +307,7 @@ vector<soundINIT> sounds = {soundINIT("boom","\"audio\\boom.mp3\""), soundINIT("
 
 vector<string> bgMusic = { "bg1", "boom"};
 string currentBgSong = "";
+bool ambienceAlloowed = true;
 
 void playSound(string alias) {
     MCIERROR error = mciSendString((L"play " + toWstring(alias) + L" from 0").c_str(), NULL, 0, NULL);
@@ -360,6 +361,14 @@ void stopSound(string alias) {
 	else {
 		std::cout << "STOPPED SOUND: " << alias << std::endl;
 	}
+}
+int ambientCountdown = 300;
+void ambientSoundTick() {
+    ambientCountdown--;
+    if (ambientCountdown == 0) {
+        ambientCountdown = 1200;
+        playSound("metal1");
+    }
 }
 
 void bgMusicTick() {
@@ -1684,6 +1693,7 @@ int main()
         //it says somewhere else what this does so dont ask me
         
         bgMusicTick();
+        ambientSoundTick();
 
         if (screenMode == 1) {
 
