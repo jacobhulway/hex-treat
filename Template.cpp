@@ -22,6 +22,9 @@ double lastFrameTime = glfwGetTime();
 
 bool drawHitboxes = false;
 
+int screenMode = 0; //0 is title screen, 1 is game, 2 is pause menu, 3 is settings, 4 is credits, 5 is game over (almost one of these exist yet :)
+
+
 struct point {
     float x;
     float y;
@@ -300,10 +303,10 @@ struct soundINIT {
 	soundINIT(string name, string path) : alias(name), path(path){}
 };
 
-vector<soundINIT> sounds = {soundINIT("boom","\"audio\\boom.mp3\""), soundINIT("bg1", "\"audio\\moo.mp3\"")};
+vector<soundINIT> sounds = {soundINIT("boom","\"audio\\boom.mp3\""), soundINIT("bg1", "\"audio\\moo.mp3\""), soundINIT("menu1", "\"audio\\menuAmbiance1.mp3\""), soundINIT("metal1", "\"audio\\metal.mp3\"")};
 
 vector<string> bgMusic = { "bg1", "boom"};
-
+string currentBgSong = "";
 
 void playSound(string alias) {
     MCIERROR error = mciSendString((L"play " + toWstring(alias) + L" from 0").c_str(), NULL, 0, NULL);
@@ -336,7 +339,58 @@ void loadSounds() {
     }
 }
 
-void bgMusic
+bool audioIsFinished(string alias) {
+    wstring newalias = toWstring(alias);
+    wchar_t status[128] = { 0 };
+    std::wstring command = L"status " + newalias + L" mode";
+
+    
+    mciSendStringW(command.c_str(), status, 128, NULL);
+
+    
+    return std::wstring(status) == L"stopped";
+}
+void stopSound(string alias) {
+	MCIERROR error = mciSendString((L"stop " + toWstring(alias)).c_str(), NULL, 0, NULL);
+	if (error) {
+		wchar_t errorText[256];
+		mciGetErrorString(error, errorText, 256);
+		std::wcerr << errorText << std::endl;
+	}
+	else {
+		std::cout << "STOPPED SOUND: " << alias << std::endl;
+	}
+}
+
+void bgMusicTick() {
+    if (screenMode == 1) {
+        if (not audioIsFinished("menu1")) {
+			stopSound("menu1");
+        }
+        if (currentBgSong == "") {
+            int randomIndex = rand() % bgMusic.size();
+            currentBgSong = bgMusic[randomIndex];
+            playSound(currentBgSong);
+        }
+        else {
+            if (audioIsFinished(currentBgSong)) {
+                currentBgSong = "";
+            }
+        }
+    }
+    else {
+		if (currentBgSong != "") {
+			stopSound(currentBgSong);
+			currentBgSong = "";
+		}
+		if (audioIsFinished("menu1")) {
+			playSound("menu1");
+		}
+    
+    }
+
+	
+}
 
 #pragma endregion
 
@@ -1273,7 +1327,6 @@ struct storage {
 #pragma region title screen for fun
 
 //okay now fun title screen stuff:
-int screenMode = 0; //0 is title screen, 1 is game, 2 is pause menu, 3 is settings, 4 is credits, 5 is game over (almost one of these exist yet :)
 
 int titleBack = 0;
 
@@ -1630,6 +1683,8 @@ int main()
         //game Logic now 
         //it says somewhere else what this does so dont ask me
         
+        bgMusicTick();
+
         if (screenMode == 1) {
 
 
