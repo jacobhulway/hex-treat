@@ -1079,6 +1079,7 @@ struct interactable {
     float cx;
     float cy;
     float radius;
+    float dist = 9999;
     bool allowInteractions;
     interactable(float x, float y, int textureID, int radius = 100, bool allowInteractions=true, string tag="") : x(x), y(y), textureID(textureID), radius(radius), allowInteractions(allowInteractions), tag(tag) {
 		width = getTextureWidth(textureID);
@@ -1087,11 +1088,15 @@ struct interactable {
         cy = y + height / 2;
         cout << cx << cy << "\n";
 	}
+    int simpleDistance() {
+		return sqrt(pow(playerX+centerX - cx, 2) + pow(playerY+centerY - cy, 2));
+    }
     bool interactionCheck() {
         if (!allowInteractions) {
             return false;
         }
 		float distance = sqrt(pow(playerX+centerX-cx, 2) + pow(playerY+centerY-cy, 2));
+        dist = distance;
         cout << "interactable distance: " << distance << "\n";
 		if (distance < radius) {
 			return true;
@@ -1101,7 +1106,16 @@ struct interactable {
 		}
     }
     void draw() {
+        if (allowInteractions and simpleDistance() < radius){
+            
+			glColor4f(0.7, 0.9, 1, 1);
+        }
+        else {
+            
+            glColor4f(1, 1, 1, 1);
+        }
         drawSprite(texture, textureID, x - playerX, y - playerY, width, height);
+        glColor4f(1, 1, 1, 1);
     }
 
 };
@@ -1283,6 +1297,7 @@ void drawAllHitboxes(level map) {
 void drawAllInteractables(level map) {
 	for (interactable obj : map.interactables) {
 		obj.draw();
+        
 	}
 }
 //draws a level
@@ -1484,6 +1499,7 @@ int main()
         },
         //Interactable Object List V
         {
+            interactable(0, 0, __ELEVATOR__, 20, true, "elevator from the store :0")
         },
         //Radial Light Source List V
         {
@@ -1717,9 +1733,12 @@ int main()
         //game Logic now 
         //it says somewhere else what this does so dont ask me
         
+        #pragma region like 2 little toots of soud i guess 
+
         bgMusicTick();
         ambientSoundTick();
 
+        #pragma endregion
         if (screenMode == 1) {
 
 
