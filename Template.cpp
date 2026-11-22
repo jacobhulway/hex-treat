@@ -79,7 +79,9 @@ vector<vector<int>> textureStorage = {
 
     {320, 3916, 320, 180},
 
-    {640, 3916, 320, 180}
+    {640, 3916, 320, 180},
+
+    {4095, 0, 1, 1}
     
 
 
@@ -125,6 +127,8 @@ int __TITLE1FRAME1__ = 5;
 int __TITLE1FRAME2__ = 6;
 
 int __TITLE1FRAME3__ = 7;
+
+int __TRANSITIONFRAME__ = 8;
 
 //bro i give up on sorting its okay atp :\
 
